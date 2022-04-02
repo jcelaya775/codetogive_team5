@@ -6,22 +6,33 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const { spawn } = require('child_process');
 
-const users = require('./routes/api/users');
+// user routes
+const mentees = require('./routes/api/mentees');
+const mentors = require('./routes/api/mentors');
+
+// server
 const app = express();
 
+// connect to database
+const url = process.env.URL;
+mongoose.connect(url)
+  .then(() => console.log('MongoDB connected...'))
+  .catch(err => console.log(err));
+
+// Bodyparse middleware
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// run python script
 const obj = { name: 'Alfred', age: 18, programming: 10, finance: 12, math: 7 };
 const child = spawn('python', ['./python/process.py', JSON.stringify(obj)]);
-
-// app.get('/', (req, res) => {
-//   const userObj = { name: 'Alfred', age: 18, programming: 10, finance: 12, math: 7 };
-//   res.json(userObj);
-// });
 
 child.stdout.on('data', (data) => {
   const str = data.toString().replace(/'/g, `"`);
   const obj = JSON.parse(str);
 
-  console.log(str);
+  console.log(obj);
 
   app.get('/', (req, res) => {
     res.json(obj)
@@ -37,7 +48,6 @@ child.on('close', (code) => {
   console.log(`child process exited with code ${code}`);
 });
 
-// child.stdin.write('/');
-
+// Launch server
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Listening on ${port}`));
