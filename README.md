@@ -1,6 +1,6 @@
-Database
-REST API
-Frontend
-ML
-Unity Gamification (optional)
-Deployment (optional)
+- [ ] Database
+- [ ] REST API
+- [ ] Frontend
+- [ ] ML
+- [ ] Unity Gamification (optional)
+- [ ] Dep]loyment (optional)
